@@ -1,4 +1,10 @@
 # Setup Feast Online Feature Store
+
+This notebook example is developed to work with the [Feast KFserving Transformer](https://github.com/kubeflow/kfserving/tree/master/docs/samples/v1beta1/transformer/feast) to populate a Feast Online store and run Feast Online Serving REST API server in a Kubernetes Cluster although Feast Online Feature Store can be run anywhere.
+
+This demo is tested with Feast v0.12.1 relase.
+
+Note: This notebook can be run inside a Kubercluster or locally.
 ## Requirement:
 - Feast Online Feature Server - Provides REST API to the Online Store. Check [here](https://github.com/feast-dev/feast/pull/1780) for detail.
 - Online Store - Redis
@@ -11,7 +17,7 @@
     git clone https://github.com/tedhtchang/populate_feast_online_store.git
     cd populate_feast_online_store
     ```
-1. Deploy Redis server a service and [test connectivity]():
+1. Deploy Redis server a service and [test connectivity](https://github.com/tedhtchang/populate_feast_online_store#test-connection-to-redis-service-in-the-k8s-cluster):
     ```bash
     kubectl apply -f config/redis.yaml
     ```
@@ -39,23 +45,23 @@ pip install notebook
 
 # Additional Configuration
 ## S3 storage
-If you wish to configure Feast SDK to use S3 for storing driver_stats.parquet or registry.db. The following env variables need to exported:
+If you wish to configure Feast SDK to use S3 or S3 compatible object store for storing driver_stats.parquet or registry.db. The following env variables need to exported:
 ```
 # Read by boto3 library
 export AWS_ACCESS_KEY_ID=<Your S3 access key id>
 export AWS_SECRET_ACCESS_KEY=<Your S3 secret key>
 
-# If you are using your own S3 storage you need this env too
+# If you are using your own S3 compatible object store you need this env too
 export FEAST_S3_ENDPOINT_URL=https://s3.us-south.cloud-object-storage.appdomain.cloud
 ```
-Example feature definition and repo config that use a custom S3 storage:
+Example feature definition and repo config that use a custom S3 endpoint (typically none aws S3 compatible object store):
 ```
 from datetime import timedelta
 from feast import FileSource, Entity, Feature, FeatureView, ValueType
 driver = Entity(name="driver_id", join_key="driver_id", value_type=ValueType.INT64,)
 
 driver_stats_source = FileSource(
-    path="s3://driver_rank_repo/data/driver_stats.parquet"
+    path="s3://driver_rank_repo/driver_stats.parquet"
     s3_endpoint_override="https://s3.us-south.cloud-object-storage.appdomain.cloud"
 )
 
@@ -98,4 +104,4 @@ kubectl run -i myredis --image=redis --rm=true --restart=Never -- redis-cli -h r
 # PONG
 ```
 ## Deploy a CronJob in the Cluster
-This CrobJob resource maybe deployed to periodically materialize offline features into the online store. May be configured to work with [S3 storage]()
+This CrobJob resource maybe deployed to periodically materialize offline features into the online store. May be configured to work with [S3 storage](https://github.com/tedhtchang/populate_feast_online_store#s3-storage)
