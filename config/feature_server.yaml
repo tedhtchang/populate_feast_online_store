@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feature-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feature-server
+  template:
+    metadata:
+      labels:
+        app: feature-server
+        name: feature-server
+    spec:
+      containers:
+      - name: feature-server
+        image: tedhtchang/feast-feature-server:latest
+        args: [-c, /mnt/driver_rank_repo, serve, -h, 0.0.0.0]
+        ports:
+          - name: feature-server
+            containerPort: 6566
+        volumeMounts:
+        - mountPath: /mnt
+          name: git-volume
+      volumes:
+        - name: git-volume
+          gitRepo:
+            repository: "https://github.com/tedhtchang/driver_rank_repo.git"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: feature-server-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: feature-server
+  ports:
+    - protocol: TCP
+      port: 6566
+      targetPort: 6566

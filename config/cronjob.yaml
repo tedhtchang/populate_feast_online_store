@@ -1,0 +1,32 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: materialize
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: materialize
+            image: tedhtchang/feast-feature-server:latest
+            command: [/bin/sh, -c]
+            args: ['cd /mnt/feature_repo;feast apply;  feast materialize 2021-08-01T16:51:10 $(date -u +"%Y-%m-%dT%H:%M:%S")']
+            # env:
+            # - name: AWS_ACCESS_KEY_ID
+            #   value: <Your S3 access key id>
+            # - name: AWS_SECRET_ACCESS_KEY
+            #   value: <Your S3 secret key>
+            # - name: FEAST_S3_ENDPOINT_URL
+            #   value: https://<your custom s3 endpoint_url>
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+            - mountPath: /mnt
+              name: git-volume
+          volumes:
+            - name: git-volume
+              gitRepo:
+                repository: "https://github.com/tedhtchang/driver_rank_repo.git"
+                directory: "feature_repo"
+          restartPolicy: OnFailure
