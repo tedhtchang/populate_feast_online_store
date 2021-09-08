@@ -16,6 +16,13 @@ spec:
       containers:
       - name: feature-server
         image: tedhtchang/feast-feature-server:latest
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          value: ""
+        - name: AWS_SECRET_ACCESS_KEY
+          value: ""
+        - name: FEAST_S3_ENDPOINT_URL
+          value: ""
         args: [-c, /mnt/driver_rank_repo, serve, -h, 0.0.0.0]
         ports:
           - name: feature-server
@@ -27,6 +34,7 @@ spec:
         - name: git-volume
           gitRepo:
             repository: "https://github.com/tedhtchang/driver_rank_repo.git"
+            revision: 1f73ff5c39b38b130dc0deba93229b882f3e2b80
 ---
 apiVersion: v1
 kind: Service

@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: materialize
 spec:
-  schedule: "*/1 * * * *"
+  schedule: "1 * * * *"
   jobTemplate:
     spec:
       template:
@@ -13,13 +13,13 @@ spec:
             image: tedhtchang/feast-feature-server:latest
             command: [/bin/sh, -c]
             args: ['cd /mnt/driver_rank_repo;feast apply;  feast materialize 2021-08-01T16:51:10 $(date -u +"%Y-%m-%dT%H:%M:%S")']
-            # env:
-            # - name: AWS_ACCESS_KEY_ID
-            #   value: <Your S3 access key id>
-            # - name: AWS_SECRET_ACCESS_KEY
-            #   value: <Your S3 secret key>
-            # - name: FEAST_S3_ENDPOINT_URL
-            #   value: https://<your custom s3 endpoint_url>
+            env:
+            - name: AWS_ACCESS_KEY_ID
+              value: ""
+            - name: AWS_SECRET_ACCESS_KEY
+              value: ""
+            - name: FEAST_S3_ENDPOINT_URL
+              value: ""
             imagePullPolicy: IfNotPresent
             volumeMounts:
             - mountPath: /mnt
@@ -28,4 +28,5 @@ spec:
             - name: git-volume
               gitRepo:
                 repository: "https://github.com/tedhtchang/driver_rank_repo.git"
+                revision: "632e18a721c12a4543adbef501ff596b94f68ea9"
           restartPolicy: OnFailure
