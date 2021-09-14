@@ -1,10 +1,12 @@
-# Setup Feast Online Feature Store
+# Setup Feast Online Feature Store in a K8s Cluster
+![Feast_kube](https://github.com/tedhtchang/populate_feast_online_store/blob/main/images/Feast_on_Kube.png)
 
 This notebook example is developed to work with the [Feast KFserving Transformer](https://github.com/kubeflow/kfserving/tree/master/docs/samples/v1beta1/transformer/feast) to populate a Feast Online store and run Feast Online Serving REST API server in a Kubernetes Cluster although Feast Online Feature Store can be run anywhere.
 
 This demo is tested with Feast v0.12.1 relase.
 
 Note: This notebook can be run inside a Kubercluster or locally.
+
 ## Requirement:
 - Feast Online Feature Server - Provides REST API to the Online Store. Check [here](https://github.com/feast-dev/feast/pull/1780) for detail.
 - Online Store - Redis
@@ -52,7 +54,7 @@ export AWS_ACCESS_KEY_ID=<Your S3 access key id>
 export AWS_SECRET_ACCESS_KEY=<Your S3 secret key>
 
 # If you are using your own S3 compatible object store you need this env too
-export FEAST_S3_ENDPOINT_URL=https://s3.us-south.cloud-object-storage.appdomain.cloud
+export FEAST_S3_ENDPOINT_URL=<your custom S3 store endpoint>
 ```
 Example feature definition and repo config that use a custom S3 endpoint (typically none aws S3 compatible object store):
 ```
@@ -62,7 +64,7 @@ driver = Entity(name="driver_id", join_key="driver_id", value_type=ValueType.INT
 
 driver_stats_source = FileSource(
     path="s3://driver_rank_repo/driver_stats.parquet"
-    s3_endpoint_override="https://s3.us-south.cloud-object-storage.appdomain.cloud"
+    s3_endpoint_override="<your custom S3 store endpoint>"
 )
 
 driver_stats_fv = FeatureView(
