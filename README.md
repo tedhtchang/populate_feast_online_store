@@ -1,4 +1,5 @@
-# Setup Feast Online Feature Store
+# Setup Feast Online Feature Store in a K8s Cluster
+![Feast_kube](images/Feast_on_kube.png)
 ## Requirement:
 - Feast Online Feature Server - Provides REST API to the Online Store. Check [here](https://github.com/feast-dev/feast/pull/1780) for detail.
 - Online Store - Redis
